@@ -1,5 +1,5 @@
 -- nmDisplayTest
--- 1.0.0 @NightMachines
+-- 1.0.1 @NightMachines
 -- llllllll.co/t/norns-display-gamma/
 --
 -- testpatterns for luminance
@@ -18,7 +18,7 @@
 
 -- VARS!
 local selScreen = 1 -- selected screen
-local myScreens = 23
+local myScreens = 38
 local flicker = 0
 
 
@@ -130,9 +130,9 @@ function drawScreen(s)
       screen.line_rel(128,0)
       screen.stroke()
     end
-  elseif s == 23 then -- flicker
+  elseif s >= 23 then -- flicker
     flicker = -1 * flicker + 1
-    screen.level(15*flicker)
+    screen.level((15-s+23)*flicker)
     screen.rect(0,0,128,64)
     screen.fill()
   end
