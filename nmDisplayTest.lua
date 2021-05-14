@@ -1,5 +1,5 @@
 -- nmDisplayTest
--- 1.0.1 @NightMachines
+-- 1.0.2 @NightMachines
 -- llllllll.co/t/norns-display-gamma/
 --
 -- testpatterns for luminance
@@ -8,6 +8,9 @@
 --
 -- turn any encoder or press
 -- K2 or K3 to switch screens
+--
+-- on flicker screens:
+-- E3 changes rate
  
 
 
@@ -18,9 +21,9 @@
 
 -- VARS!
 local selScreen = 1 -- selected screen
-local myScreens = 38
+local myScreens = 37
 local flicker = 0
-
+local refreshRate = 15
 
 -- INIT!
 function init()
@@ -41,18 +44,32 @@ function key(id,st)
   elseif id==3 and st == 1then
     selScreen = util.clamp(selScreen+1,1,myScreens)
   end
+  if selScreen < 23 then
+    refreshRate = 15
+    re.time = 1.0 / refreshRate
+  end
 end
 
 
 -- ENCODERS!
 function enc(id,delta)
-  selScreen = util.clamp(selScreen+delta,1,myScreens)
-  if id==1 then
-    
-  elseif id==2 then
-    
-  elseif id==3 then 
 
+  if id==1 then
+  selScreen = util.clamp(selScreen+delta,1,myScreens)    
+  elseif id==2 then
+  selScreen = util.clamp(selScreen+delta,1,myScreens)
+  elseif id==3 then 
+    if selScreen >= 23 then
+      refreshRate = util.clamp(refreshRate+delta,2,15)
+      re.time = 1.0 / refreshRate
+    else
+      selScreen = util.clamp(selScreen+delta,1,myScreens)
+    end
+  end
+  
+  if selScreen < 23 then
+    refreshRate = 15
+    re.time = 1.0 / refreshRate
   end
 
 end
@@ -140,7 +157,7 @@ end
 
 
 re = metro.init() -- screen refresh
-re.time = 1.0 / 15
+re.time = 1.0 / refreshRate
 re.event = function()
   redraw()
 end
